@@ -1,62 +1,51 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Form from './components/Form';
 import Todo from './components/Todo';
 import './App.css';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      nextId: 1,
-      todos: [],
-    }
-    this.addTodo = this.addTodo.bind(this);
-    this.removeTodo = this.removeTodo.bind(this);
-  }
+const App = () => {
+  const [nextId, setNextId] = useState(1);
+  const [todos, setTodos] = useState([]);
 
-  addTodo(text) {
+  const addTodo = text => {
     const nextTodos = [
-      ...this.state.todos,
+      ...todos,
       {
-        id: this.state.nextId,
+        id: nextId,
         body: text
       },
     ];
 
-    this.setState({
-      nextId: this.state.nextId + 1,
-      todos: nextTodos,
-    });
-  }
+    setTodos(nextTodos);
+    setNextId(nextId + 1)
+  };
 
-  removeTodo(target) {
-    const idx = this.state.todos.findIndex(({ id }) => id === target);
+  const removeTodo = target => {
+    const idx = todos.findIndex(({ id }) => id === target);
     const nextTodos = [
-      ...this.state.todos
+      ...todos
     ];
     nextTodos.splice(idx, 1);
 
-    this.setState({
-      todos: nextTodos,
-    })
+    setTodos(nextTodos);
   }
 
-  render() {
-    return (
-      <div id="app">
-        <Form handleAdd={this.addTodo} />
-        {
-          this.state.todos.map(todo => {
-            return (
-              <Todo
-                key={todo.id}
-                todo={todo}
-                handleRemove={this.removeTodo}
-              />
-            );
-          })
-        }
-      </div>
-    );
-  }
+  return (
+    <div id="app">
+      <Form handleAdd={addTodo} />
+      {
+        todos.map(todo => {
+          return (
+            <Todo
+              key={todo.id}
+              todo={todo}
+              handleRemove={removeTodo}
+            />
+          );
+        })
+      }
+    </div>
+  );
 }
+
+export default App;
